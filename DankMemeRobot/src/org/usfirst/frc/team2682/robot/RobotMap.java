@@ -44,8 +44,8 @@ public class RobotMap {
 	public static double inchesPerPulse = (circumference/pulsesPerRevolution) * gearRatio;*/
 	
 	//Encoder Channels
-	public static int leftEncoderChannelA = 16;
-	public static int leftEncoderChannelB = 17;
+	public static int leftEncoderChannelA = 0;
+	public static int leftEncoderChannelB = 1;
 	public static int rightEncoderChannelA = 6;
 	public static int rightEncoderChannelB = 7;
 	
