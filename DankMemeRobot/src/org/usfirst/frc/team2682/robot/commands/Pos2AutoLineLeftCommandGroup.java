@@ -9,8 +9,8 @@ public class Pos2AutoLineLeftCommandGroup extends CommandGroup {
 
     public Pos2AutoLineLeftCommandGroup() {
     	addSequential(new DriveByGyro(0, .65, 36, false));
-    	addSequential(new TurnByGyro(45, .65, 1, false));
-    	addSequential(new DriveByGyro(45, .65, 108, false));
+    	addSequential(new TurnByGyro(-45, .65, 1, false));
+    	addSequential(new DriveByGyro(-45, .65, 108, false));
     	addSequential(new TurnByGyro(0, .65, 1, false));
     	addSequential(new DriveByGyro(0, .65, 36, false));
         // Add Commands here:
