@@ -10,8 +10,10 @@ package org.usfirst.frc.team2682.robot;
 import org.opencv.core.Rect;
 import org.usfirst.frc.team2682.robot.commands.DriveByGyro;
 import org.usfirst.frc.team2682.robot.commands.DriveToRRTapeCommand;
+import org.usfirst.frc.team2682.robot.commands.LLLAutoPos1CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.LLLAutoPos2CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.LLLAutoPos3CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RRRAutoPos1CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.RRRAutoPos2CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.RRRAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.TurnToRRTapeCommand;
@@ -76,7 +78,7 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
-		SmartDashboard.putNumber("starting position", 1);
+		/*SmartDashboard.putNumber("starting position", 1);
 		
 		comPort = new I2C(I2C.Port.kOnboard, 0x54);
 		
@@ -91,7 +93,7 @@ public class Robot extends TimedRobot {
 				}
 			}
 		});
-		thread.start();
+		thread.start();*/
 	}
 
 	/**
@@ -115,7 +117,7 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Gyro", drive.getCurrentHeading());
 		
 		//SmartDashboard.putNumber("powercube x",objectX.getValue());
-		System.out.println(powerCubeData[0] >> 8 + powerCubeData[1]);
+		//System.out.println(powerCubeData[0] >> 8 + powerCubeData[1]);
 		
 		SmartDashboard.putNumber("powercube width", objectWidth.getValue());
 		SmartDashboard.putBoolean("PowerCube seen", isObjectSeen.get());
@@ -137,12 +139,17 @@ public class Robot extends TimedRobot {
 	public void autonomousInit(){
 		drive.ahrs.reset();
 		drive.resetEncoders();
-		/*startingPos = (int) SmartDashboard.getNumber("starting position", 1);
+		startingPos = (int) SmartDashboard.getNumber("starting position", 1);
 		
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
 		switch (startingPos) {
 		case 1:
+			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
+				m_autonomousCommand = new RRRAutoPos1CommandGroup();
+			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
+				m_autonomousCommand = new LLLAutoPos1CommandGroup();
+			}
 			break;
 		case 2:
 			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
@@ -169,7 +176,7 @@ public class Robot extends TimedRobot {
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
 		
-		m_autonomousCommand = new TurnToRRTapeCommand();
+		//m_autonomousCommand = new TurnToRRTapeCommand();
 
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {

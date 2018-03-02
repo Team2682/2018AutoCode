@@ -1,0 +1,36 @@
+/Examples
+
+.metadata
+.recommenders
+
+**/.settings
+**/.loadpath
+
+**/bin
+**/tmp
+**/build
+**/dist
+
+**/*.tmp
+**/*.bak
+**/*.swp
+**/*~.nib
+
+**/local.properties
+
+# External tool builders
+**/.externalToolBuilders/
+
+# Locally stored "Eclipse launch configurations"
+**/*.launch
+
+# Java annotation processor (APT)
+**/.factorypath
+
+# Code Recommenders
+**/.recommenders
+
+# Scala IDE specific (Scala & Java development for Eclipse)
+**/.cache-main
+**/.scala_dependencies
+**/.worksheet

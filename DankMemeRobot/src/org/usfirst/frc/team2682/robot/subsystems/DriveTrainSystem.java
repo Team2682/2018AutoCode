@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.SPI;
 import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.Talon;
 import edu.wpi.first.wpilibj.command.Subsystem;
@@ -29,7 +30,7 @@ public class DriveTrainSystem extends Subsystem {
 	Encoder leftEncoder = new Encoder(RobotMap.leftEncoderChannelA, RobotMap.leftEncoderChannelB, false, EncodingType.k4X);
 	//Encoder rightEncoder = new Encoder(RobotMap.rightEncoderChannelA, RobotMap.rightEncoderChannelB, false, EncodingType.k4X);
 	
-	public AHRS ahrs = new AHRS(Port.kMXP);
+	public AHRS ahrs = new AHRS(SPI.Port.kMXP);
 	//public ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	
 	DifferentialDrive drive2 = new DifferentialDrive(leftDrive, rightDrive);
