@@ -9,26 +9,18 @@ package org.usfirst.frc.team2682.robot;
 
 import org.opencv.core.Rect;
 import org.usfirst.frc.team2682.robot.commands.DriveByGyro;
-import org.usfirst.frc.team2682.robot.commands.DriveToRRTapeCommand;
-import org.usfirst.frc.team2682.robot.commands.LLLAutoPos2CommandGroup;
-import org.usfirst.frc.team2682.robot.commands.LLLAutoPos3CommandGroup;
-import org.usfirst.frc.team2682.robot.commands.RRRAutoPos2CommandGroup;
-import org.usfirst.frc.team2682.robot.commands.RRRAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.TurnToRRTapeCommand;
 import org.usfirst.frc.team2682.robot.subsystems.DriveTrainSystem;
 import org.usfirst.frc.team2682.robot.subsystems.ExampleSubsystem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.SerialPort;
-import edu.wpi.first.wpilibj.SerialPort.Port;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import util.Misc;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -52,7 +44,8 @@ public class Robot extends TimedRobot {
 	
 	public static DigitalInput isObjectSeen = new DigitalInput(RobotMap.pixyCamDIOPin);
 	public static AnalogInput objectX = new AnalogInput(RobotMap.pixyCamAnalogPin);
-	public static AnalogInput objectWidth = new AnalogInput(1);
+	
+	public static AnalogInput ultraSonicSensor = new AnalogInput(2);
 	
 	public static int startingPos = 1;
 	
@@ -76,22 +69,9 @@ public class Robot extends TimedRobot {
 	@Override
 	public void robotInit() {
 		oi = new OI();
-		SmartDashboard.putNumber("starting position", 1);
+		SmartDashboard.putNumber("starting position", 3);
 		
 		comPort = new I2C(I2C.Port.kOnboard, 0x54);
-		
-		Thread thread = new Thread(() -> {
-			while (!Thread.interrupted()) {
-				
-				try {
-					comPort.readOnly(powerCubeData, 2);
-//					//powercubeX = Integer.parseInt(powerCubeData);
-				} catch (NumberFormatException e) {
-					
-				}
-			}
-		});
-		thread.start();
 	}
 
 	/**
@@ -115,10 +95,10 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("Gyro", drive.getCurrentHeading());
 		
 		//SmartDashboard.putNumber("powercube x",objectX.getValue());
-		System.out.println(powerCubeData[0] >> 8 + powerCubeData[1]);
-		
-		SmartDashboard.putNumber("powercube width", objectWidth.getValue());
 		SmartDashboard.putBoolean("PowerCube seen", isObjectSeen.get());
+		//int pCubeX = PixyCamUtils.getLargestBlock(comPort).x;
+		SmartDashboard.putNumber("block x", Misc.map(objectX.getVoltage(),0,3.3,0,320));
+		SmartDashboard.putNumber("block distance", Misc.map(ultraSonicSensor.getValue(),0,90,0,12));
 		
 	}
 
@@ -143,6 +123,12 @@ public class Robot extends TimedRobot {
 		
 		switch (startingPos) {
 		case 1:
+			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
+				m_autonomousCommand = new RRRAutoPos1CommandGroup();
+			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
+				m_autonomousCommand = new LLLAutoPos1CommandGroup();
+				
+			}
 			break;
 		case 2:
 			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
