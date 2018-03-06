@@ -7,14 +7,14 @@
 
 package org.usfirst.frc.team2682.robot;
 
-import org.opencv.core.Rect;
+import org.usfirst.frc.team2682.robot.commands.BackTrackCommandGroupTest;
 import org.usfirst.frc.team2682.robot.commands.DriveByGyro;
-import org.usfirst.frc.team2682.robot.commands.TurnToRRTapeCommand;
 import org.usfirst.frc.team2682.robot.subsystems.DriveTrainSystem;
 import org.usfirst.frc.team2682.robot.subsystems.ExampleSubsystem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
@@ -45,15 +45,24 @@ public class Robot extends TimedRobot {
 	public static DigitalInput isObjectSeen = new DigitalInput(RobotMap.pixyCamDIOPin);
 	public static AnalogInput objectX = new AnalogInput(RobotMap.pixyCamAnalogPin);
 	
-	public static AnalogInput ultraSonicSensor = new AnalogInput(2);
+	public static AnalogInput ultraSonicSensor = new AnalogInput(1);
 	
 	public static int startingPos = 1;
 	
-	//private final Object imglock = new Object();
+	static double backTrackEncoder;
+	static double backTrackAngle;
 	
-	public static double centerX = 0.0;
-	public static Rect contourRect;
+	double[] backTrackVector1 = {0,0};
+	double[] backTrackFinalVector = {0,0};
 	
+	public static double magnitude = 0.0;
+	public static double angle = 0.0;
+	
+	public static double displaceXMeters;
+	public static double displaceYMeters;
+	
+	boolean added = false;
+
 	int powercubeX;
 	byte[] powerCubeData;
 	
@@ -81,7 +90,7 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void disabledInit() {
-		
+		drive.ahrs.resetDisplacement();
 	}
 
 	@Override
@@ -92,13 +101,16 @@ public class Robot extends TimedRobot {
 		
 		SmartDashboard.putNumber("encoder",drive.getDistance());
 		
-		SmartDashboard.putNumber("Gyro", drive.getCurrentHeading());
+		SmartDashboard.putNumber("Gyro Yaw", drive.getCurrentHeading());
 		
 		//SmartDashboard.putNumber("powercube x",objectX.getValue());
 		SmartDashboard.putBoolean("PowerCube seen", isObjectSeen.get());
 		//int pCubeX = PixyCamUtils.getLargestBlock(comPort).x;
 		SmartDashboard.putNumber("block x", Misc.map(objectX.getVoltage(),0,3.3,0,320));
 		SmartDashboard.putNumber("block distance", Misc.map(ultraSonicSensor.getValue(),0,90,0,12));
+		
+		SmartDashboard.putNumber("displaceY", drive.ahrs.getDisplacementY());
+		SmartDashboard.putNumber("displaceX", drive.ahrs.getDisplacementX());
 		
 	}
 
@@ -117,11 +129,11 @@ public class Robot extends TimedRobot {
 	public void autonomousInit(){
 		drive.ahrs.reset();
 		drive.resetEncoders();
-		/*startingPos = (int) SmartDashboard.getNumber("starting position", 1);
+		startingPos = (int) SmartDashboard.getNumber("starting position", 1);
 		
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
-		switch (startingPos) {
+		/*switch (startingPos) {
 		case 1:
 			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
 				m_autonomousCommand = new RRRAutoPos1CommandGroup();
@@ -144,6 +156,8 @@ public class Robot extends TimedRobot {
 			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
 				m_autonomousCommand = new LLLAutoPos3CommandGroup();
 				
+			} else if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'L') {
+				m_autonomousCommand = new RLRAutoPos3CommandGroup();
 			}
 			break;
 		}
@@ -155,7 +169,7 @@ public class Robot extends TimedRobot {
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
 		
-		m_autonomousCommand = new TurnToRRTapeCommand();
+		m_autonomousCommand = new BackTrackCommandGroupTest();
 
 		// schedule the autonomous command (example)
 		if (m_autonomousCommand != null) {
@@ -169,8 +183,17 @@ public class Robot extends TimedRobot {
 	@Override
 	public void autonomousPeriodic() {
 		Scheduler.getInstance().run();
+    	Robot.displaceXMeters = Robot.drive.ahrs.getDisplacementX() / .02670288;
+    	Robot.displaceXMeters = Robot.drive.ahrs.getDisplacementY() / .02670288;
+		//SmartDashboard.putNumber("encoder backtrack", backTrackEncoder);
+		//SmartDashboard.putNumber("angle backtrack", backTrackAngle);
 		SmartDashboard.putNumber("encoder",drive.getDistance());
 		SmartDashboard.putNumber("correction", DriveByGyro.correction);
+		
+		SmartDashboard.putNumber("angle", angle);
+		SmartDashboard.putNumber("enc", magnitude);
+		
+		SmartDashboard.putNumber("displaceX", drive.ahrs.getDisplacementX());
 	}
 	
 	@Override
@@ -205,4 +228,22 @@ public class Robot extends TimedRobot {
 	public void testPeriodic() {
 		Scheduler.getInstance().run();
 	}
+
+	public static double getBackTrackEncoder() {
+		return backTrackEncoder;
+	}
+
+	public static void setBackTrackEncoder(double backTrackEncoder) {
+		Robot.backTrackEncoder = backTrackEncoder;
+	}
+
+	public static double getBackTrackAngle() {
+		return backTrackAngle;
+	}
+
+	public static void setBackTrackAngle(double backTrackAngle) {
+		Robot.backTrackAngle = backTrackAngle;
+	}
+	
+	
 }

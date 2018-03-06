@@ -29,7 +29,7 @@ public class DriveTrainSystem extends Subsystem {
 	Encoder leftEncoder = new Encoder(RobotMap.leftEncoderChannelA, RobotMap.leftEncoderChannelB, false, EncodingType.k4X);
 	//Encoder rightEncoder = new Encoder(RobotMap.rightEncoderChannelA, RobotMap.rightEncoderChannelB, false, EncodingType.k4X);
 	
-	public AHRS ahrs = new AHRS(I2C.Port.kMXP);
+	public AHRS ahrs = new AHRS(I2C.Port.kOnboard);
 	//public ADXRS450_Gyro gyro = new ADXRS450_Gyro();
 	
 	DifferentialDrive drive2 = new DifferentialDrive(leftDrive, rightDrive);

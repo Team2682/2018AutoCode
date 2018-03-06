@@ -1,12 +1,10 @@
 package org.usfirst.frc.team2682.robot.commands;
 
-import java.security.Timestamp;
-import java.util.Date;
+import org.usfirst.frc.team2682.robot.Robot;
+import org.usfirst.frc.team2682.robot.RobotMap;
 
-import org.usfirst.frc.team2682.robot.*;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.PIDCorrection;
 import util.RoboRioLogger;
 
@@ -26,7 +24,27 @@ public class DriveByGyro extends Command {
 	
 	RoboRioLogger logger;
 	boolean debug = false;
+	
+	Timer timer = new Timer();
+	
+	boolean outputBackTrack = false;
 
+	public DriveByGyro(boolean backTracking, double setPoint, double basePower, double targetPulses, boolean debug) {
+		// Use requires() here to declare subsystem dependencies
+		// eg. requires(chassis);
+		requires(Robot.drive);
+		this.setPoint = setPoint;
+		this.basePower = basePower;
+		if (!backTracking)
+			this.targetPulses = targetDistance * RobotMap.PULSES_PER_INCH;
+		else
+			this.targetPulses = targetPulses;
+		if (debug) {
+			this.logger = new RoboRioLogger();	
+		}
+		this.debug = debug;
+	}
+	
 	public DriveByGyro(double setPoint, double basePower, double targetDistance, boolean debug) {
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
@@ -44,6 +62,9 @@ public class DriveByGyro extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		Robot.drive.resetEncoders();
+		
+		timer.reset();
+		timer.start();
 		// Robot.drive.resetGyro();
 	}
 
@@ -69,32 +90,8 @@ public class DriveByGyro extends Command {
 			leftPower += correction;
 			rightPower -= correction;
 		}
-		/*} else {
-			if (setPoint < 0) { setPoint += 360; }
-			if (currentHeading < 0) {
-				currentHeading += 360;
-			}
-			error = setPoint - currentHeading;
-
-			if (setPoint > currentHeading && error <= 180) {
-				leftPower -= correction;
-				rightPower += correction;
-			} else if (setPoint > currentHeading && error > 180) {
-				leftPower += correction;
-				rightPower -= correction;
-			} else if (setPoint < currentHeading && error <= 180) {
-				leftPower += correction;
-				rightPower -= correction;
-			} else {
-				leftPower -= correction;
-				rightPower += correction;
-			}
-		}*/
-		if (debug) {
-			logger.log("Drive By Gyro: SetPoint: " + setPoint + ", Current:" + currentHeading + ", Err:" + error + ", Correction:"
-				+ correction + "T.D.:" + targetDistance + ", T.P.:" + targetPulses);
-		}
 		Robot.drive.tankMove(leftPower, rightPower);
+		//System.out.println("thing 2" + setPoint);
 
 		//logger.flush();
 	}
