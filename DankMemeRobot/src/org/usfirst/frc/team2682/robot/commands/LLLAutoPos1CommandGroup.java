@@ -13,6 +13,7 @@ public class LLLAutoPos1CommandGroup extends CommandGroup {
         //      addSequential(new Command2());
         // these will run in order.
     	
+<<<<<<< HEAD
     	addSequential(new DriveByGyro(0, .65, 180, false));
     	addSequential(new TurnByGyro(30, .4, 2, false));
     	addSequential(new DriveByGyro(30, .65, 96/2, false));
@@ -20,6 +21,9 @@ public class LLLAutoPos1CommandGroup extends CommandGroup {
     	addSequential(new DriveByGyro(0, .6, 20, false));
     	addSequential(new WaitCommand(.5));
     	addSequential(new TurnByGyro(180, .4, 2, false));
+=======
+    	addSequential(new DriveByGyro(false, 0, .75, 280, false));
+>>>>>>> grayson-local
     	
         // To run multiple commands at the same time,
         // use addParallel()

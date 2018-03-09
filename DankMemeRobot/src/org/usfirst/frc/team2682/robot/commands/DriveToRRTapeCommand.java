@@ -3,66 +3,96 @@ package org.usfirst.frc.team2682.robot.commands;
 import org.usfirst.frc.team2682.robot.Robot;
 
 import edu.wpi.first.wpilibj.command.Command;
-import util.PIDCorrection;
+import util.Misc;
 
 /**
  *
  */
 public class DriveToRRTapeCommand extends Command {
 
-	static double basePower;
+    double encoderValue;
+
+    double totalEncoderValue;
+
+    double vectorComponentX;
+
+    double vectorComponentY;
+
+    double distance;
+	
+	double basePower;
 	double correction = 0.0;
 	public static double setPoint = 0;
 	double error = 0;
 	
-	public static double leftPower = basePower;
-	public static double rightPower = basePower;
+	public double leftPower = basePower;
+	public double rightPower = basePower;
 	
-    public DriveToRRTapeCommand(double basePower) {
+	boolean secondOrNot;
+	
+    public DriveToRRTapeCommand(boolean secondOrNot, double basePower) {
         // Use requires() here to declare subsystem dependencies
         // eg. requires(chassis);
     	requires(Robot.drive);
     	this.basePower = basePower;
-    	Robot.drive.resetGyro();
+    	this.secondOrNot = secondOrNot;
+    	//Robot.drive.resetGyro();
     }
 
     // Called just before this Command runs the first time
     protected void initialize() {
+    	Robot.drive.resetEncoders();
     }
 
     // Called repeatedly when this Command is scheduled to run
     protected void execute() {
-    	if(Robot.contourRect.width >= 200) {
-    		Robot.drive.stop();
-    	}
-    	else {
+    	
+    	double currentPulses;
+    	
+    	int powercubeX = (int) Misc.map(Robot.objectX.getVoltage(),0,3.3,0,320);
     		leftPower = basePower;
     		rightPower = basePower;
-    		if (Robot.centerX >= 157 && Robot.centerX <= 162) {
-    			
-    		} else if (Robot.centerX > 157) {
-    			leftPower -= .075;
-    			rightPower += .075;
-    		} else if (Robot.centerX < 162) {
+    		if (powercubeX >= 157 && powercubeX <= 162) {
+    			leftPower = basePower;
+    			rightPower = basePower;
+    		} else if (powercubeX < 157) {
     			leftPower += .075;
     			rightPower -= .075;
+    		} else if (powercubeX > 162) {
+    			leftPower -= .075;
+    			rightPower += .075;
     		}
     		Robot.drive.tankMove(leftPower, rightPower);
-    		
-    	}
+
     }
 
     // Make this return true when this Command no longer needs to run execute()
     protected boolean isFinished() {
-        return false;
+        return Misc.map(Robot.ultraSonicSensor.getValue(),0,90,0,12) <= 20;
     }
 
     // Called once after isFinished returns true
     protected void end() {
+    	if (!secondOrNot) {
+    		Robot.setBackTrackEncoder(Robot.drive.getDistance());
+    		Robot.setBackTrackAngle(Robot.drive.getCurrentHeading());
+    	} else {
+    		Robot.setBackTrackEncoder2(Robot.drive.getDistance());
+    		Robot.setBackTrackAngle2(Robot.drive.getCurrentHeading());
+    	}
+    	Robot.drive.stop();
     }
 
     // Called when another command which requires one or more of the same
     // subsystems is scheduled to run
     protected void interrupted() {
+    	if (!secondOrNot) {
+    		Robot.setBackTrackEncoder(Robot.drive.getDistance());
+    		Robot.setBackTrackAngle(Robot.drive.getCurrentHeading());
+    	} else {
+    		Robot.setBackTrackEncoder2(Robot.drive.getDistance());
+    		Robot.setBackTrackAngle2(Robot.drive.getCurrentHeading());
+    	}
+    	Robot.drive.stop();
     }
 }

@@ -12,7 +12,7 @@ public class LLLAutoPos3CommandGroup extends CommandGroup {
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
         // these will run in order.
-    	addSequential(new DriveByGyro(0, .65, 225, false));
+    	addSequential(new DriveByGyro(false,0, .65, 225, false));
 
         // To run multiple commands at the same time,
         // use addParallel()

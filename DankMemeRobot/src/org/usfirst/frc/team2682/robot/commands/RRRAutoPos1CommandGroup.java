@@ -13,8 +13,27 @@ public class RRRAutoPos1CommandGroup extends CommandGroup {
         //      addSequential(new Command2());
         // these will run in order.
     	
+<<<<<<< HEAD
     	addSequential(new DriveByGyro(0, .65, 225, false));
 
+=======
+    	addSequential(new DriveByGyro(false,0, .75, 215, false));
+    	addSequential(new TurnByGyro(90, .5, 1.5, false));
+    	addSequential(new DriveByGyro(false,90, .75, 70, false));
+    	addSequential(new DriveByGyro(false,90, .55, 50, false));
+    	addSequential(new DriveByGyro(false,90, .75, 55, false));
+    	addSequential(new TurnByGyro(180, .5, 1.5, false));
+    	addSequential(new DriveByGyro(true,180, .5, 30, false));
+    	addSequential(new WaitCommand(.5));
+    	addSequential(new DriveByGyro(false, 180, -.65,10, false));
+    	addSequential(new DriveToRRTapeCommand(false, .5));
+    	addSequential(new WaitCommand(.5));
+    	addSequential(new DriveByGyro(true, false, -.65, false));
+    	addSequential(new WaitCommand(.5));
+    	addSequential(new TurnByGyro(0, .5, 2, false));
+    	addSequential(new DriveByGyro(false, 0, .55,10,false));
+    	
+>>>>>>> grayson-local
         // To run multiple commands at the same time,
         // use addParallel()
         // e.g. addParallel(new Command1());

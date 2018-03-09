@@ -88,6 +88,7 @@ public class TurnByGyro extends Command {
 
 	// Called once after isFinished returns true
 	protected void end() {
+		System.out.println("test");
 		Robot.drive.stop();
 		if (debug) {
 			logger.flush();

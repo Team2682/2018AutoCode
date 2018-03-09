@@ -5,17 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class Pos1And3AutoLineCommandGroup extends CommandGroup {
+public class LRLAutoPos3CommandGroup extends CommandGroup {
 
-    public Pos1And3AutoLineCommandGroup() {
-    	
-<<<<<<< HEAD
-    	addSequential(new DriveByGyro(0, .65, 132, false));
-=======
-    	addSequential(new DriveByGyro(false,0, .65, 132, false));
->>>>>>> grayson-local
-    	addSequential(new WaitCommand(5));
-    	
+    public LRLAutoPos3CommandGroup() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());

@@ -5,17 +5,14 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class Pos1And3AutoLineCommandGroup extends CommandGroup {
+public class LAutoPos2CommandGroup extends CommandGroup {
 
-    public Pos1And3AutoLineCommandGroup() {
-    	
-<<<<<<< HEAD
-    	addSequential(new DriveByGyro(0, .65, 132, false));
-=======
-    	addSequential(new DriveByGyro(false,0, .65, 132, false));
->>>>>>> grayson-local
-    	addSequential(new WaitCommand(5));
-    	
+    public LAutoPos2CommandGroup() {
+    	addSequential(new DriveByGyro(false,0, .65, 36, false));
+    	addSequential(new TurnByGyro(-45, .65, 1, false));
+    	addSequential(new DriveByGyro(false,-45, .65, 108, false));
+    	addSequential(new TurnByGyro(0, .65, 1, false));
+    	addSequential(new DriveByGyro(false,0, .65, 36, false));
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
@@ -26,7 +23,6 @@ public class Pos1And3AutoLineCommandGroup extends CommandGroup {
         // e.g. addParallel(new Command1());
         //      addSequential(new Command2());
         // Command1 and Command2 will run in parallel.
-
         // A command group will require all of the subsystems that each member
         // would require.
         // e.g. if Command1 requires chassis, and Command2 requires arm,
