@@ -1,12 +1,11 @@
 package org.usfirst.frc.team2682.robot.commands;
 
-import java.security.Timestamp;
-import java.util.Date;
+import org.usfirst.frc.team2682.robot.Robot;
+import org.usfirst.frc.team2682.robot.RobotMap;
 
-import org.usfirst.frc.team2682.robot.*;
-
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import util.Misc;
 import util.PIDCorrection;
 import util.RoboRioLogger;
 
@@ -26,8 +25,29 @@ public class DriveByGyro extends Command {
 	
 	RoboRioLogger logger;
 	boolean debug = false;
+	boolean secondOrNot;
+	boolean backTracking;
+	
+	boolean useDistanceSensor;
+	
+	Timer timer = new Timer();
+	
+	boolean outputBackTrack = false;
 
-	public DriveByGyro(double setPoint, double basePower, double targetDistance, boolean debug) {
+	public DriveByGyro(boolean backTracking, boolean secondOrNot, double basePower, boolean debug) {
+		// Use requires() here to declare subsystem dependencies
+		// eg. requires(chassis);
+		requires(Robot.drive);
+		this.basePower = basePower;
+		this.secondOrNot = secondOrNot;
+		this.backTracking = backTracking;
+		if (debug) {
+			this.logger = new RoboRioLogger();	
+		}
+		this.debug = debug;
+	}
+	
+	public DriveByGyro(boolean useDistanceSensor, double setPoint, double basePower, double targetDistance, boolean debug) {
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		requires(Robot.drive);
@@ -35,6 +55,7 @@ public class DriveByGyro extends Command {
 		this.basePower = basePower;
 		this.targetDistance = targetDistance;
 		this.targetPulses = targetDistance * RobotMap.PULSES_PER_INCH;
+		this.useDistanceSensor = useDistanceSensor;
 		if (debug) {
 			this.logger = new RoboRioLogger();	
 		}
@@ -44,11 +65,24 @@ public class DriveByGyro extends Command {
 	// Called just before this Command runs the first time
 	protected void initialize() {
 		Robot.drive.resetEncoders();
+		
+		timer.reset();
+		timer.start();
 		// Robot.drive.resetGyro();
 	}
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
+		if (backTracking) {
+			if (secondOrNot) {
+				this.setPoint = Robot.getBackTrackAngle2();
+				this.targetPulses = Robot.getBackTrackEncoder2();
+			} else {
+				this.setPoint = Robot.getBackTrackAngle();
+				this.targetPulses = Robot.getBackTrackEncoder();
+			
+			}
+		}
 		double error;
 		double currentHeading = Robot.drive.getCurrentHeading();
 		correction = pidCorrection.calculateCorrection(setPoint, currentHeading);
@@ -69,39 +103,18 @@ public class DriveByGyro extends Command {
 			leftPower += correction;
 			rightPower -= correction;
 		}
-		/*} else {
-			if (setPoint < 0) { setPoint += 360; }
-			if (currentHeading < 0) {
-				currentHeading += 360;
-			}
-			error = setPoint - currentHeading;
-
-			if (setPoint > currentHeading && error <= 180) {
-				leftPower -= correction;
-				rightPower += correction;
-			} else if (setPoint > currentHeading && error > 180) {
-				leftPower += correction;
-				rightPower -= correction;
-			} else if (setPoint < currentHeading && error <= 180) {
-				leftPower += correction;
-				rightPower -= correction;
-			} else {
-				leftPower -= correction;
-				rightPower += correction;
-			}
-		}*/
-		if (debug) {
-			logger.log("Drive By Gyro: SetPoint: " + setPoint + ", Current:" + currentHeading + ", Err:" + error + ", Correction:"
-				+ correction + "T.D.:" + targetDistance + ", T.P.:" + targetPulses);
-		}
 		Robot.drive.tankMove(leftPower, rightPower);
+		//System.out.println("thing 2" + setPoint);
 
 		//logger.flush();
 	}
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return Math.abs(Robot.drive.getDistance()) >= targetPulses;
+		if (useDistanceSensor)
+			return Math.abs(Robot.drive.getDistance()) >= targetPulses || Misc.map(Robot.ultraSonicSensor.getValue(),0,90,0,12) <= 20;
+		else
+			return Math.abs(Robot.drive.getDistance()) >= targetPulses;
 	}
 
 	// Called once after isFinished returns true

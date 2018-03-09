@@ -9,7 +9,8 @@ public class Pos1And3AutoLineCommandGroup extends CommandGroup {
 
     public Pos1And3AutoLineCommandGroup() {
     	
-    	addSequential(new DriveByGyro(0, .65, 132, false));
+
+    	addSequential(new DriveByGyro(false,0, .65, 132, false));
     	addSequential(new WaitCommand(5));
     	
         // Add Commands here:

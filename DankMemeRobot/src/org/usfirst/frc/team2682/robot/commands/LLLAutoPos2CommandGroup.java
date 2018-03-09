@@ -19,17 +19,17 @@ public class LLLAutoPos2CommandGroup extends CommandGroup {
         //      addSequential(new Command2());
         // Command1 and Command2 will run in parallel.
 
-    	addSequential(new DriveByGyro(0, .65, 20, false));
+    	addSequential(new DriveByGyro(false, 0, .65, 20, false));
     	addSequential(new TurnByGyro(-45, .4, 2, false));
-    	addSequential(new DriveByGyro(-45, .65, 80, false));
+    	addSequential(new DriveByGyro(false, -45, .65, 80, false));
     	addSequential(new TurnByGyro(-90, .4, 2, false));
-    	addSequential(new DriveByGyro(-90, .65, 36, false));
+    	addSequential(new DriveByGyro(false, -90, .65, 36, false));
     	addSequential(new TurnByGyro(0, .4, 2, false));
-    	addSequential(new DriveByGyro(0, .65, 156/2, false));
+    	addSequential(new DriveByGyro(false, 0, .65, 156/2, false));
     	addSequential(new TurnByGyro(20, .4, 2, false));
-    	addSequential(new DriveByGyro(20, .65, 96/2, false));
+    	addSequential(new DriveByGyro(false, 20, .65, 96/2, false));
     	addSequential(new TurnByGyro(0, .4, 2, false));
-    	addSequential(new DriveByGyro(0, .6, 40, false));
+    	addSequential(new DriveByGyro(false, 0, .6, 40, false));
     	addSequential(new WaitCommand(.5));
     	addSequential(new TurnByGyro(180, .4, 2, false));
         // A command group will require all of the subsystems that each member

@@ -5,14 +5,9 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class Pos2AutoLineRightCommandGroup extends CommandGroup {
+public class LRLAutoPos3CommandGroup extends CommandGroup {
 
-    public Pos2AutoLineRightCommandGroup() {
-    	addSequential(new DriveByGyro(false, 0, .65, 36, false));
-    	addSequential(new TurnByGyro(45, .65, 1, false));
-    	addSequential(new DriveByGyro(false, 45, .65, 108, false));
-    	addSequential(new TurnByGyro(0, .65, 1, false));
-    	addSequential(new DriveByGyro(true, 0, .65, 36, false));
+    public LRLAutoPos3CommandGroup() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
