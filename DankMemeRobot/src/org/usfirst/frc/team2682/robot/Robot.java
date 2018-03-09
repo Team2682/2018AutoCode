@@ -8,11 +8,15 @@
 package org.usfirst.frc.team2682.robot;
 
 import org.usfirst.frc.team2682.robot.commands.DriveByGyro;
+import org.usfirst.frc.team2682.robot.commands.LAutoPos2CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.LLLAutoPos1CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.LLLAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.LRLAutoPos1CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.LRLAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.Pos1And3AutoLineCommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RAutoPos2CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.RLRAutoPos1CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RLRAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.RRRAutoPos1CommandGroup;
 import org.usfirst.frc.team2682.robot.commands.RRRAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.subsystems.DriveTrainSystem;
@@ -164,9 +168,9 @@ public class Robot extends TimedRobot {
 			break;
 		case 2:
 			if (gameData.toUpperCase().charAt(0) == 'R') {
-//				autonomousCommand = new RAutoPos2CommandGroup();
+				autonomousCommand = new RAutoPos2CommandGroup();
 			} else if (gameData.toUpperCase().charAt(0) == 'L') {
-//				autonomousCommand = new LAutoPos2CommandGroup();
+				autonomousCommand = new LAutoPos2CommandGroup();
 				
 			}
 			break;
@@ -176,9 +180,9 @@ public class Robot extends TimedRobot {
 			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
 				autonomousCommand = new LLLAutoPos3CommandGroup();
 			} else if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'L') {
-//				autonomousCommand = new RLRAutoPos3CommandGroup();
+				autonomousCommand = new RLRAutoPos3CommandGroup();
 			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'R') {
-//				autonomousCommand = new LRLAutoPos3CommandGroup();
+				autonomousCommand = new LRLAutoPos3CommandGroup();
 			}
 			break;
 		default:

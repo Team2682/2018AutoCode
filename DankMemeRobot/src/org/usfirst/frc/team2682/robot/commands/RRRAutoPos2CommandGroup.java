@@ -15,17 +15,17 @@ public class RRRAutoPos2CommandGroup extends CommandGroup {
         //      addSequential(new Command2());
         // these will run in order.
     	
-    	addSequential(new DriveByGyro(0, .6, 20, false));
+    	addSequential(new DriveByGyro(false, 0, .6, 20, false));
     	addSequential(new TurnByGyro(40, .4, 2, false));
-    	addSequential(new DriveByGyro(40, .6, 93, false));
+    	addSequential(new DriveByGyro(false, 40, .6, 93, false));
     	addSequential(new TurnByGyro(90, .4, 2, false));
-    	addSequential(new DriveByGyro(90, .6, 36, false));
+    	addSequential(new DriveByGyro(false, 90, .6, 36, false));
     	addSequential(new TurnByGyro(0, .4, 2, false));
-    	addSequential(new DriveByGyro(0, .65, 156/2, false));
+    	addSequential(new DriveByGyro(false, 0, .65, 156/2, false));
     	addSequential(new TurnByGyro(-20, .4, 2, false));
-    	addSequential(new DriveByGyro(-20, .65, 96/2, false));
+    	addSequential(new DriveByGyro(false, -20, .65, 96/2, false));
     	addSequential(new TurnByGyro(0, .4, 2, false));
-    	addSequential(new DriveByGyro(0, .6, 20, false));
+    	addSequential(new DriveByGyro(false, 0, .6, 20, false));
     	addSequential(new WaitCommand(.5));
     	addSequential(new TurnByGyro(180, .4, 2, false));
  
