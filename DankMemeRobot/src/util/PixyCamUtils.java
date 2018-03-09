@@ -40,7 +40,7 @@ public class PixyCamUtils {
 		return block;
 		
 	}
-	public static int bytesToInt(int msb,int lsb) {
+	public static short bytesToInt(int msb,int lsb) {
 		if (msb < 0) {
 			msb+=256;
 		}
@@ -49,7 +49,7 @@ public class PixyCamUtils {
 			lsb +=  256;
 		}
 		value += lsb;
-		return value;
+		return (short) value;
 	}
 	
 }

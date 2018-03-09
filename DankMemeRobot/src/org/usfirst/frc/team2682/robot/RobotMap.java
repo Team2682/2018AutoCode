@@ -33,6 +33,9 @@ public class RobotMap {
 	public static final double ENCODER_FOOT = 210;
 	public static final double PULSES_PER_INCH = ENCODER_FOOT/12;
 	
+	public static final double OneMeterGyroY = 2;
+	public static final double OneMeterGyroX = .21;
+	
 	/*Alternate method for finding encoder.getDistance()
 	public static double wheelDiameter = 6;
 	public static double circumference = Math.PI * wheelDiameter;

@@ -5,6 +5,7 @@ import org.usfirst.frc.team2682.robot.RobotMap;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.command.Command;
+import util.Misc;
 import util.PIDCorrection;
 import util.RoboRioLogger;
 
@@ -24,28 +25,29 @@ public class DriveByGyro extends Command {
 	
 	RoboRioLogger logger;
 	boolean debug = false;
+	boolean secondOrNot;
+	boolean backTracking;
+	
+	boolean useDistanceSensor;
 	
 	Timer timer = new Timer();
 	
 	boolean outputBackTrack = false;
 
-	public DriveByGyro(boolean backTracking, double setPoint, double basePower, double targetPulses, boolean debug) {
+	public DriveByGyro(boolean backTracking, boolean secondOrNot, double basePower, boolean debug) {
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		requires(Robot.drive);
-		this.setPoint = setPoint;
 		this.basePower = basePower;
-		if (!backTracking)
-			this.targetPulses = targetDistance * RobotMap.PULSES_PER_INCH;
-		else
-			this.targetPulses = targetPulses;
+		this.secondOrNot = secondOrNot;
+		this.backTracking = backTracking;
 		if (debug) {
 			this.logger = new RoboRioLogger();	
 		}
 		this.debug = debug;
 	}
 	
-	public DriveByGyro(double setPoint, double basePower, double targetDistance, boolean debug) {
+	public DriveByGyro(boolean useDistanceSensor, double setPoint, double basePower, double targetDistance, boolean debug) {
 		// Use requires() here to declare subsystem dependencies
 		// eg. requires(chassis);
 		requires(Robot.drive);
@@ -53,6 +55,7 @@ public class DriveByGyro extends Command {
 		this.basePower = basePower;
 		this.targetDistance = targetDistance;
 		this.targetPulses = targetDistance * RobotMap.PULSES_PER_INCH;
+		this.useDistanceSensor = useDistanceSensor;
 		if (debug) {
 			this.logger = new RoboRioLogger();	
 		}
@@ -70,6 +73,16 @@ public class DriveByGyro extends Command {
 
 	// Called repeatedly when this Command is scheduled to run
 	protected void execute() {
+		if (backTracking) {
+			if (secondOrNot) {
+				this.setPoint = Robot.getBackTrackAngle2();
+				this.targetPulses = Robot.getBackTrackEncoder2();
+			} else {
+				this.setPoint = Robot.getBackTrackAngle();
+				this.targetPulses = Robot.getBackTrackEncoder();
+			
+			}
+		}
 		double error;
 		double currentHeading = Robot.drive.getCurrentHeading();
 		correction = pidCorrection.calculateCorrection(setPoint, currentHeading);
@@ -98,7 +111,10 @@ public class DriveByGyro extends Command {
 
 	// Make this return true when this Command no longer needs to run execute()
 	protected boolean isFinished() {
-		return Math.abs(Robot.drive.getDistance()) >= targetPulses;
+		if (useDistanceSensor)
+			return Math.abs(Robot.drive.getDistance()) >= targetPulses || Misc.map(Robot.ultraSonicSensor.getValue(),0,90,0,12) <= 20;
+		else
+			return Math.abs(Robot.drive.getDistance()) >= targetPulses;
 	}
 
 	// Called once after isFinished returns true

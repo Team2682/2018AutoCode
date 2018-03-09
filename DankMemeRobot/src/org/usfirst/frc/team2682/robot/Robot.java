@@ -7,18 +7,30 @@
 
 package org.usfirst.frc.team2682.robot;
 
-import org.usfirst.frc.team2682.robot.commands.BackTrackCommandGroupTest;
 import org.usfirst.frc.team2682.robot.commands.DriveByGyro;
+import org.usfirst.frc.team2682.robot.commands.LAutoPos2CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.LLLAutoPos1CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.LLLAutoPos3CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.LRLAutoPos1CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.LRLAutoPos3CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.Pos1And3AutoLineCommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RAutoPos2CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RLRAutoPos1CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RLRAutoPos3CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RRRAutoPos1CommandGroup;
+import org.usfirst.frc.team2682.robot.commands.RRRAutoPos3CommandGroup;
 import org.usfirst.frc.team2682.robot.subsystems.DriveTrainSystem;
 import org.usfirst.frc.team2682.robot.subsystems.ExampleSubsystem;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.BuiltInAccelerometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.command.Scheduler;
+import edu.wpi.first.wpilibj.interfaces.Accelerometer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import util.Misc;
 
@@ -35,7 +47,7 @@ public class Robot extends TimedRobot {
 	public static final DriveTrainSystem drive = new DriveTrainSystem();
 	public static OI oi;
 
-	Command m_autonomousCommand;
+	Command autonomousCommand;
 	
 	public static final String USBName = "/dev/ttyUSB0";
 
@@ -52,6 +64,9 @@ public class Robot extends TimedRobot {
 	static double backTrackEncoder;
 	static double backTrackAngle;
 	
+	static double backTrackEncoder2;
+	static double backTrackAngle2;
+	
 	double[] backTrackVector1 = {0,0};
 	double[] backTrackFinalVector = {0,0};
 	
@@ -65,6 +80,8 @@ public class Robot extends TimedRobot {
 
 	int powercubeX;
 	byte[] powerCubeData;
+	
+	Accelerometer accel = new BuiltInAccelerometer(Accelerometer.Range.k4G);
 	
 	//VisionThread turnDownForWhatVision;
 	
@@ -109,8 +126,8 @@ public class Robot extends TimedRobot {
 		SmartDashboard.putNumber("block x", Misc.map(objectX.getVoltage(),0,3.3,0,320));
 		SmartDashboard.putNumber("block distance", Misc.map(ultraSonicSensor.getValue(),0,90,0,12));
 		
-		SmartDashboard.putNumber("displaceY", drive.ahrs.getDisplacementY());
-		SmartDashboard.putNumber("displaceX", drive.ahrs.getDisplacementX());
+		SmartDashboard.putNumber("encoder 1", getBackTrackEncoder());
+		SmartDashboard.putNumber("displaceX", accel.getX());
 		
 	}
 
@@ -127,39 +144,46 @@ public class Robot extends TimedRobot {
 	 */
 	@Override
 	public void autonomousInit(){
+		drive.ahrs.resetDisplacement();
 		drive.ahrs.reset();
 		drive.resetEncoders();
 		startingPos = (int) SmartDashboard.getNumber("starting position", 1);
 		
 		String gameData = DriverStation.getInstance().getGameSpecificMessage();
 		
-		/*switch (startingPos) {
+		switch (startingPos) {
 		case 1:
 			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
-				m_autonomousCommand = new RRRAutoPos1CommandGroup();
+				autonomousCommand = new RRRAutoPos1CommandGroup();
 			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
-				m_autonomousCommand = new LLLAutoPos1CommandGroup();
-				
+				autonomousCommand = new LLLAutoPos1CommandGroup();
+			} else if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'L') {
+				autonomousCommand = new RLRAutoPos1CommandGroup();
+			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'R') {
+				autonomousCommand = new LRLAutoPos1CommandGroup();
 			}
 			break;
 		case 2:
-			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
-				m_autonomousCommand = new RRRAutoPos2CommandGroup();
-			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
-				m_autonomousCommand = new LLLAutoPos2CommandGroup();
+			if (gameData.toUpperCase().charAt(0) == 'R') {
+				autonomousCommand = new RAutoPos2CommandGroup();
+			} else if (gameData.toUpperCase().charAt(0) == 'L') {
+				autonomousCommand = new LAutoPos2CommandGroup();
 				
 			}
 			break;
 		case 3:
 			if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'R') {
-				m_autonomousCommand = new RRRAutoPos3CommandGroup();
+				autonomousCommand = new RRRAutoPos3CommandGroup();
 			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'L') {
-				m_autonomousCommand = new LLLAutoPos3CommandGroup();
-				
+				autonomousCommand = new LLLAutoPos3CommandGroup();
 			} else if (gameData.toUpperCase().charAt(0) == 'R' && gameData.toUpperCase().charAt(1) == 'L') {
-				m_autonomousCommand = new RLRAutoPos3CommandGroup();
+				autonomousCommand = new RLRAutoPos3CommandGroup();
+			} else if (gameData.toUpperCase().charAt(0) == 'L' && gameData.toUpperCase().charAt(1) == 'R') {
+				autonomousCommand = new LRLAutoPos3CommandGroup();
 			}
 			break;
+		default:
+			autonomousCommand = new Pos1And3AutoLineCommandGroup();
 		}
 
 		/*
@@ -169,11 +193,11 @@ public class Robot extends TimedRobot {
 		 * autonomousCommand = new ExampleCommand(); break; }
 		 */
 		
-		m_autonomousCommand = new BackTrackCommandGroupTest();
+		//m_autonomousCommand = new BackTrackCommandGroupTest();
 
 		// schedule the autonomous command (example)
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.start();
+		if (autonomousCommand != null) {
+			autonomousCommand.start();
 		}
 	}
 
@@ -189,11 +213,6 @@ public class Robot extends TimedRobot {
 		//SmartDashboard.putNumber("angle backtrack", backTrackAngle);
 		SmartDashboard.putNumber("encoder",drive.getDistance());
 		SmartDashboard.putNumber("correction", DriveByGyro.correction);
-		
-		SmartDashboard.putNumber("angle", angle);
-		SmartDashboard.putNumber("enc", magnitude);
-		
-		SmartDashboard.putNumber("displaceX", drive.ahrs.getDisplacementX());
 	}
 	
 	@Override
@@ -202,8 +221,8 @@ public class Robot extends TimedRobot {
 		// teleop starts running. If you want the autonomous to
 		// continue until interrupted by another command, remove
 		// this line or comment it out.
-		if (m_autonomousCommand != null) {
-			m_autonomousCommand.cancel();
+		if (autonomousCommand != null) {
+			autonomousCommand.cancel();
 		}
 	}
 
@@ -243,6 +262,22 @@ public class Robot extends TimedRobot {
 
 	public static void setBackTrackAngle(double backTrackAngle) {
 		Robot.backTrackAngle = backTrackAngle;
+	}
+
+	public static double getBackTrackEncoder2() {
+		return backTrackEncoder2;
+	}
+
+	public static void setBackTrackEncoder2(double backTrackEncoder2) {
+		Robot.backTrackEncoder2 = backTrackEncoder2;
+	}
+
+	public static double getBackTrackAngle2() {
+		return backTrackAngle2;
+	}
+
+	public static void setBackTrackAngle2(double backTrackAngle2) {
+		Robot.backTrackAngle2 = backTrackAngle2;
 	}
 	
 	

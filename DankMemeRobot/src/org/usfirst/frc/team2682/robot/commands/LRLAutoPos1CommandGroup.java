@@ -13,19 +13,19 @@ public class LRLAutoPos1CommandGroup extends CommandGroup {
         //      addSequential(new Command2());
         // these will run in order.
     	
-    	addSequential(new DriveByGyro(0, .65, 180, false));
+    	addSequential(new DriveByGyro(false,0, .65, 180, false));
     	addSequential(new TurnByGyro(90, .4, 2, false));
-    	addSequential(new DriveByGyro(90, .65, 8, false));
-    	addSequential(new DriveByGyro(90, -.65, 8, false));
+    	addSequential(new DriveByGyro(false,90, .65, 8, false));
+    	addSequential(new DriveByGyro(false,90, -.65, 8, false));
     	addSequential(new TurnByGyro(0, .4, 2, false));
-    	addSequential(new DriveByGyro(0, .65, 45, false));
-    	addSequential(new DriveByGyro(0, -.65, 10, false));
+    	addSequential(new DriveByGyro(false,0, .65, 45, false));
+    	addSequential(new DriveByGyro(false,0, -.65, 10, false));
     	addSequential(new TurnByGyro(90, .4, 2, false));
-    	addSequential(new DriveByGyro(90, .65, 80, false));
-    	addSequential(new DriveByGyro(90, .4, 20, false));
-    	addSequential(new DriveByGyro(90, .65, 80, false));
+    	addSequential(new DriveByGyro(false,90, .65, 80, false));
+    	addSequential(new DriveByGyro(false,90, .4, 20, false));
+    	addSequential(new DriveByGyro(false,90, .65, 80, false));
     	addSequential(new TurnByGyro(0, .4, 2, false));
-    	addSequential(new DriveByGyro(0, .65, 8, false));
+    	addSequential(new DriveByGyro(false,0, .65, 8, false));
     	
     	// To run multiple commands at the same time,
         // use addParallel()

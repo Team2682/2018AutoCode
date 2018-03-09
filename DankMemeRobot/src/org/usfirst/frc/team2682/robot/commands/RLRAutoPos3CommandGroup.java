@@ -27,20 +27,20 @@ public class RLRAutoPos3CommandGroup extends CommandGroup {
     	
     	
     	
-    	addSequential(new DriveByGyro(0, .75, 225, false));
+    	addSequential(new DriveByGyro(false,0, .75, 225, false));
     	addSequential(new TurnByGyro(-90, .5, 1.5, false));
-    	addSequential(new DriveByGyro(-90, .75, 78, false));
-    	addSequential(new DriveByGyro(-90, .65, 78/2, false));
-    	addSequential(new DriveByGyro(-90, .75, 70, false));
+    	addSequential(new DriveByGyro(false,-90, .75, 78, false));
+    	addSequential(new DriveByGyro(false,-90, .65, 78/2, false));
+    	addSequential(new DriveByGyro(false,-90, .75, 70, false));
     	addSequential(new TurnByGyro(0, .5, 1.5, false));
-    	addSequential(new DriveByGyro(0, .75, 10, false));
+    	addSequential(new DriveByGyro(false,0, .75, 10, false));
     	addSequential(new WaitCommand(1));
-    	addSequential(new DriveByGyro(0, -.75, 10, false));
+    	addSequential(new DriveByGyro(false,0, -.75, 10, false));
     	addSequential(new TurnByGyro(90, .5, 1.5, false));
-    	addSequential(new DriveByGyro(90, .75, 60, false));
-    	addSequential(new DriveByGyro(90, .65, 78/2, false));
-    	addSequential(new DriveByGyro(90, .75, 45, false));
+    	addSequential(new DriveByGyro(false,90, .75, 60, false));
+    	addSequential(new DriveByGyro(false,90, .65, 78/2, false));
+    	addSequential(new DriveByGyro(false,90, .75, 45, false));
     	addSequential(new TurnByGyro(180, .5, 1.5, false));
-    	addSequential(new DriveToRRTapeCommand(.5));
+    	addSequential(new DriveToRRTapeCommand(false,.5));
     }
 }

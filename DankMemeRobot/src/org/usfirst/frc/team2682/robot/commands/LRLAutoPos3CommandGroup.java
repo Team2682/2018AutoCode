@@ -5,16 +5,14 @@ import edu.wpi.first.wpilibj.command.CommandGroup;
 /**
  *
  */
-public class LLLAutoPos1CommandGroup extends CommandGroup {
+public class LRLAutoPos3CommandGroup extends CommandGroup {
 
-    public LLLAutoPos1CommandGroup() {
+    public LRLAutoPos3CommandGroup() {
         // Add Commands here:
         // e.g. addSequential(new Command1());
         //      addSequential(new Command2());
         // these will run in order.
-    	
-    	addSequential(new DriveByGyro(false, 0, .75, 280, false));
-    	
+
         // To run multiple commands at the same time,
         // use addParallel()
         // e.g. addParallel(new Command1());
